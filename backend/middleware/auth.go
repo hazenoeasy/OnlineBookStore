@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"singo/model"
-	"singo/serializer"
-
+	"DuckyGo/model"
+	"DuckyGo/serializer"
+	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // CurrentUser 获取登录用户
@@ -33,7 +34,28 @@ func AuthRequired() gin.HandlerFunc {
 			}
 		}
 
-		c.JSON(200, serializer.CheckLogin())
+		c.JSON(http.StatusOK, serializer.Response{
+			Code: serializer.UserNotPermissionError,
+			Msg:  "需要登录",
+		}.Result())
+		c.Abort()
+	}
+}
+
+// 必须为管理员
+func AuthAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("1")
+		if user, _ := c.Get("user"); user != nil {
+			if user.(*model.User).SuperUser {
+				c.Next()
+				return
+			}
+		}
+		c.JSON(http.StatusOK, serializer.Response{
+			Code: serializer.UserNotPermissionError,
+			Msg:  "你没有权限进行此操作.",
+		}.Result())
 		c.Abort()
 	}
 }

@@ -1,15 +1,15 @@
 package cache
 
 import (
+	"fmt"
 	"os"
-	"singo/util"
 	"strconv"
 
 	"github.com/go-redis/redis"
 )
 
 // RedisClient Redis缓存客户端单例
-var REDIS *redis.Client
+var RedisClient *redis.Client
 
 // Redis 在中间件中初始化redis链接
 func InitRedis() {
@@ -23,9 +23,8 @@ func InitRedis() {
 	_, err := client.Ping().Result()
 
 	if err != nil {
-		util.Log().Panic("连接Redis不成功", err)
+		panic(fmt.Sprintf("连接Redis出现异常: %v", err))
 	}
 
-	REDIS = client
-	util.Log().Info("\nRedis 链接 OK\n")
+	RedisClient = client
 }
