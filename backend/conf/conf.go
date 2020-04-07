@@ -4,6 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/smartwalle/alipay/v3"
 	"os"
+	"singo/cache"
 	"singo/model"
 	"singo/service"
 	"singo/util"
@@ -24,9 +25,8 @@ func Init() {
 	}
 
 	// 连接数据库
-	model.Database(os.Getenv("MYSQL_DSN"))
-	// TODO: fix redis support in future...
-	// cache.Redis()
+	model.InitDB(os.Getenv("MYSQL_DSN"))
+	cache.InitRedis()
 
 	// 初始化支付宝SDK
 	aliClient, err := alipay.New(os.Getenv("ALI_APP_ID"), os.Getenv("ALI_MERCHANT_PRIVATE_KEY"), true)

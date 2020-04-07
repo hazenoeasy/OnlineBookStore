@@ -9,10 +9,10 @@ import (
 )
 
 // RedisClient Redis缓存客户端单例
-var RedisClient *redis.Client
+var REDIS *redis.Client
 
 // Redis 在中间件中初始化redis链接
-func Redis() {
+func InitRedis() {
 	db, _ := strconv.ParseUint(os.Getenv("REDIS_DB"), 10, 64)
 	client := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_ADDR"),
@@ -26,5 +26,6 @@ func Redis() {
 		util.Log().Panic("连接Redis不成功", err)
 	}
 
-	RedisClient = client
+	REDIS = client
+	util.Log().Info("\nRedis 链接 OK\n")
 }
