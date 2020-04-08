@@ -1,11 +1,9 @@
 package api
 
 import (
-	"DuckyGo/serializer"
 	"DuckyGo/service"
 	"net/http"
 
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,14 +11,9 @@ import (
 func UserRegister(c *gin.Context) {
 	var service service.UserRegisterService
 	if err := c.ShouldBind(&service); err == nil {
-		if user, err := service.Register(); err != nil {
-			c.JSON(http.StatusOK, err.Result())
-		} else {
-			res := serializer.Response{Data: serializer.BuildUserResponse(user)}
-			c.JSON(http.StatusOK, res.Result())
-		}
+		c.JSON(http.StatusOK, service.Register())
 	} else {
-		c.JSON(http.StatusOK, ErrorResponse(err).Result())
+		c.JSON(http.StatusOK, ErrorResponse(err))
 	}
 }
 
@@ -28,48 +21,65 @@ func UserRegister(c *gin.Context) {
 func UserLogin(c *gin.Context) {
 	var service service.UserLoginService
 	if err := c.ShouldBind(&service); err == nil {
-		if user, err := service.Login(); err != nil {
-			c.JSON(http.StatusOK, err)
-		} else {
-			// 设置Session
-			s := sessions.Default(c)
-			s.Clear()
-			s.Set("user_id", user.ID)
-			s.Save()
+		c.JSON(http.StatusOK, service.Login())
+	} else {
+		c.JSON(http.StatusOK, ErrorResponse(err))
+	}
+}
 
-			res := serializer.Response{Data: serializer.BuildUserResponse(user)}
-			c.JSON(http.StatusOK, res.Result())
+// UserChangeName 修改用户名
+// 在调用此api前，需要使用jwt中间件验证token
+func UserChangeName(c *gin.Context) {
+	var service service.UserChangeNameService
+	if err := c.ShouldBindHeader(&(service.Header)); err == nil {
+		if err := c.ShouldBind(&(service.NewName)); err == nil {
+			c.JSON(http.StatusOK, service.ChangeName())
+		} else {
+			c.JSON(http.StatusOK, ErrorResponse(err))
 		}
 	} else {
-		c.JSON(http.StatusOK, ErrorResponse(err).Result())
+		c.JSON(http.StatusOK, ErrorResponse(err))
 	}
 }
 
-// UserMe 用户详情
-func UserMe(c *gin.Context) {
-	user := CurrentUser(c)
-	res := serializer.Response{Data: serializer.BuildUserResponse(*user)}
-	c.JSON(http.StatusOK, res.Result())
-}
-
-// ChangePassword 修改密码
-func ChangePassword(c *gin.Context) {
-	user := CurrentUser(c)
-	var service service.ChangePassword
-	if err := c.ShouldBind(&service); err == nil {
-		res := service.Change(user)
-		c.JSON(http.StatusOK, res.Result())
+// UserChangePwd 修改密码
+// 在调用此api前，需要使用jwt中间件验证token
+func UserChangePwd(c *gin.Context) {
+	// 在调用此api前，需要使用jwt中间件验证token
+	var serv service.UserChangePwdService
+	if err := c.ShouldBindHeader(&(serv.Header)); err == nil {
+		if err := c.ShouldBind(&(serv.Pwds)); err == nil {
+			c.JSON(http.StatusOK, serv.ChangePassword())
+		} else {
+			c.JSON(http.StatusOK, ErrorResponse(err))
+		}
 	} else {
-		c.JSON(http.StatusOK, ErrorResponse(err).Result())
+		c.JSON(http.StatusOK, ErrorResponse(err))
 	}
 }
 
-// UserLogout 用户登出
-func UserLogout(c *gin.Context) {
-	s := sessions.Default(c)
-	s.Clear()
-	s.Save()
-	c.JSON(http.StatusOK, serializer.Response{
-		Msg: "登出成功",
-	}.Result())
+// UserAddAddress 用户添加一个收货地址
+// 在调用此api前，需要使用jwt中间件验证token
+func UserAddAddress(c *gin.Context) {
+	var serv service.UserAddAddressService
+	if err := c.ShouldBindHeader(&(serv.Header)); err == nil {
+		if err := c.ShouldBind(&(serv.Body)); err == nil {
+			c.JSON(http.StatusOK, serv.AddAddress())
+		} else {
+			c.JSON(http.StatusOK, ErrorResponse(err))
+		}
+	} else {
+		c.JSON(http.StatusOK, ErrorResponse(err))
+	}
+}
+
+// UserShowAddress 查看用户的所有收货地址
+// 在调用此api前，需要使用jwt中间件验证token
+func UserShowAddress(c *gin.Context) {
+	var serv service.UserShowAddressService
+	if err := c.ShouldBindHeader(&serv); err == nil {
+		c.JSON(http.StatusOK, serv.ShowAddresses())
+	} else {
+		c.JSON(http.StatusOK, ErrorResponse(err))
+	}
 }

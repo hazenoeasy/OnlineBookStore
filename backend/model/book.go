@@ -2,7 +2,7 @@ package model
 
 // Book 书籍信息
 type Book struct {
-    BookId  int     `gorm:"column:book_id;primary_key"`
+    BookId  int     `gorm:"column:book_id;primary_key;auto_increment"`
     Title   string  `gorm:"column:title;type:varchar(128);not null"`
     Author  string  `gorm:"column:author;type:varchar(64);not null"`
     Price   int     `gorm:"column:price;not null"`

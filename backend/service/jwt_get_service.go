@@ -1,31 +1,29 @@
 package service
 
+// 主题： 生成token
+// 作者： 章星明
+// 版本： v0.0.1
+// 时间： 2020-4-8
+
 import (
-	"DuckyGo/auth"
 	"DuckyGo/conf"
-	"DuckyGo/serializer"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
 
-// GetJwtTokenService 获得Token的服务
-type GetJwtTokenService struct {
-}
-
-// Get 获得Token
-func (service *GetJwtTokenService) Get() *serializer.Response {
-	claims := auth.Jwt{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Second * time.Duration(300)).Unix(),
-			IssuedAt:  time.Now().Unix(),
-		},
-		Data:           "Default Message.",
+// 返回一个token
+// 如果生成token失败，则返回空字符串和错误
+func NewJwtToken(audience string) (string, error) {
+	claim := &jwt.StandardClaims{
+		Audience:	audience,
+		ExpiresAt: 	time.Now().Add(time.Minute * time.Duration(60)).Unix(),
+		IssuedAt:  	time.Now().Unix(),
 	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	jwtString, _ := token.SignedString(conf.SigningKey)
-
-	return &serializer.Response{
-		Data: jwtString,
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+	s, err := token.SignedString(conf.SigningKey)
+	if err != nil {
+		return "", err
+	} else {
+		return s, nil
 	}
 }

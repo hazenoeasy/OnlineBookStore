@@ -6,7 +6,7 @@ import (
 
 // Order 订单
 type Order struct {
-    OrderId     int     `gorm:"column:order_id;primary_key"`
+    OrderId     int     `gorm:"column:order_id;primary_key;auto_increment"`
     UserId      int     `gorm:"column:user_id;foreignkey:user_id;association_foreignkey:user_id;not null"`
     RecvInfoId  int     `gorm:"column:recv_info_id;foreignkey:recv_info_id;association_foreignkey:recv_info_id"`
     // 快递公司名称，由商家填写

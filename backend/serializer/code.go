@@ -1,30 +1,31 @@
 package serializer
 
 // 定义所有状态码
+
 const (
-	// 用户不存在
-	UserNotFoundError = 40000
+	// 操作成功
+	OpSuccess 			=	20000
 
-	// 用户密码错误
-	UserPasswordError = 40001
+	// 用户已存在
+	UserNameRepeat		= 	40000
 
-	// 用户无权限查看此资源 (需要登录)
-	UserNotPermissionError = 40002
+	// 用户名或密码错误
+	UserNamePwdErr		=	40001
 
-	// 用户输入不合法
-	UserInputError = 40003
-
-	// 用户重复错误
-	UserRepeatError = 40004
+	// token授权到期
+	TokenExpired		=	40002
 )
 
 const (
 	// 严重的错误
-	ServerPanicError = 50000
+	FatalErr 			= 	50000
 
 	// 数据库写入错误
-	DatabaseWriteError = 50001
+	DBWriteErr 			= 	50001
 
 	// 数据库读取错误
-	DatabaseReadError = 50002
+	DBReadErr 			= 	50002
+
+	// 请求格式错误
+	RequestParamErr 	=	50003
 )

@@ -2,9 +2,15 @@ package model
 
 // User 用户模型
 type User struct {
-	UserId 		int		`gorm:"column:user_id;primary_key"`
-	UserName	string	`gorm:"column:user_name;type:varchar(64);not null"`
+	UserId 		int		`gorm:"column:user_id;primary_key;auto_increment"`
+	UserName	string	`gorm:"column:user_name;type:varchar(64);not null;unique"`
 	Password 	string	`gorm:"column:password;type:varchar(128);not null"`
+}
+
+// 检测密码是否正确
+// 如果正确，返回true，否则返回false
+func (u *User) CheckPassword(pwd string) bool {
+	return pwd == u.Password
 }
 
 //const (

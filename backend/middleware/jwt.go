@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"DuckyGo/auth"
 	"DuckyGo/conf"
 	"DuckyGo/serializer"
 	"github.com/dgrijalva/jwt-go"
@@ -17,24 +16,34 @@ func JwtRequired() gin.HandlerFunc {
 		// 判断请求头中是否有token
 		if userToken == "" {
 			c.JSON(http.StatusOK, serializer.Response{
-				Code: serializer.UserNotPermissionError,
-				Msg:  "令牌不能为空！",
-			}.Result())
+				Code: 	serializer.RequestParamErr,
+				Msg:  	"令牌不能为空！",
+			})
 			c.Abort()
 			return
 		}
 
 		// 解码token值
-		token, _ := jwt.ParseWithClaims(userToken, &auth.Jwt{}, func(token *jwt.Token) (interface{}, error) {
-			return conf.SigningKey, nil
-		})
+		token, err := jwt.ParseWithClaims(userToken, &jwt.StandardClaims{},
+			func(token *jwt.Token) (interface{}, error) {
+				return conf.SigningKey, nil
+			})
+		if err != nil {
+			c.JSON(http.StatusOK, serializer.Response{
+				Code: 	serializer.FatalErr,
+				Data: 	err,
+				Msg:  	"token解码错误",
+			})
+			c.Abort()
+			return
+		}
 
 		if token.Valid != true {
 			// 过期或者非正确处理
 			c.JSON(http.StatusOK, serializer.Response{
-				Code: serializer.UserNotPermissionError,
-				Msg:  "令牌错误！",
-			}.Result())
+				Code: 	serializer.TokenExpired,
+				Msg:  	"令牌到期！",
+			})
 			c.Abort()
 		}
 	}
