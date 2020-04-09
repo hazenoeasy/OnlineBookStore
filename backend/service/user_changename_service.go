@@ -10,16 +10,14 @@ import (
     "DuckyGo/serializer"
 )
 
-// UserChangeNameService 管理修改用户名的服务
-type UserChangeNameService struct {
-    Header      UserHeader
+type SubUserChangeNameService struct {
     NewName     string  `form:"username_new" json:"username_new" binding:"required"`
 }
 
-// UserHeader 用户授权信息
-type UserHeader struct {
-    UserId  int     `header:"user_id" binding:"required"`
-    Token   string  `header:"token" binding:"required"`
+// UserChangeNameService 管理修改用户名的服务
+type UserChangeNameService struct {
+    Header      UserHeader
+    Body        SubUserChangeNameService
 }
 
 // 更改用户名
@@ -28,7 +26,7 @@ func (s *UserChangeNameService) ChangeName() serializer.Response {
     // 此处不再需要重新验证token
 
     // 检测新用户名是否已经存在
-    if err := UserName(s.NewName).Valid(); err != nil {
+    if err := UserName(s.Body.NewName).Valid(); err != nil {
         return *err
     }
 
@@ -41,7 +39,7 @@ func (s *UserChangeNameService) ChangeName() serializer.Response {
     //        Msg:  "用户不存在",
     //    }
     //}
-    if err := model.DB.Model(&user).Update("user_name", s.NewName).Error; err != nil {
+    if err := model.DB.Model(&user).Update("user_name", s.Body.NewName).Error; err != nil {
         return serializer.Response{
             Code: serializer.DBWriteErr,
             Data: err,
@@ -50,7 +48,7 @@ func (s *UserChangeNameService) ChangeName() serializer.Response {
     }
     return serializer.Response{
         Code: serializer.OpSuccess,
-        Data: s.NewName,
+        Data: s.Body.NewName,
         Msg:  "用户名修改成功",
     }
 }

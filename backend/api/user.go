@@ -2,9 +2,8 @@ package api
 
 import (
 	"DuckyGo/service"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // UserRegister 用户注册接口
@@ -30,10 +29,15 @@ func UserLogin(c *gin.Context) {
 // UserChangeName 修改用户名
 // 在调用此api前，需要使用jwt中间件验证token
 func UserChangeName(c *gin.Context) {
-	var service service.UserChangeNameService
-	if err := c.ShouldBindHeader(&(service.Header)); err == nil {
-		if err := c.ShouldBind(&(service.NewName)); err == nil {
-			c.JSON(http.StatusOK, service.ChangeName())
+	var (
+		userid 	service.UserHeader
+		newname	service.SubUserChangeNameService
+	)
+	// TODO: 修bug了：目前测试后发现，如果form和header标签在一个结构体里面出现，对改结构体的成员的分别绑定会出现问题，最好导致只有部分的成员绑定成功（出现在结构体靠前位置的成员）
+	if err := c.ShouldBindHeader(&userid); err == nil {
+		if err := c.ShouldBind(&newname); err == nil {
+			serv := service.UserChangeNameService{userid, newname}
+			c.JSON(http.StatusOK, serv.ChangeName())
 		} else {
 			c.JSON(http.StatusOK, ErrorResponse(err))
 		}
@@ -45,10 +49,13 @@ func UserChangeName(c *gin.Context) {
 // UserChangePwd 修改密码
 // 在调用此api前，需要使用jwt中间件验证token
 func UserChangePwd(c *gin.Context) {
-	// 在调用此api前，需要使用jwt中间件验证token
-	var serv service.UserChangePwdService
-	if err := c.ShouldBindHeader(&(serv.Header)); err == nil {
-		if err := c.ShouldBind(&(serv.Pwds)); err == nil {
+	var (
+		userid 	service.UserHeader
+		pwds	service.SubUserChangePwdService
+	)
+	if err := c.ShouldBindHeader(&userid); err == nil {
+		if err := c.ShouldBind(&pwds); err == nil {
+			serv := service.UserChangePwdService{userid, pwds}
 			c.JSON(http.StatusOK, serv.ChangePassword())
 		} else {
 			c.JSON(http.StatusOK, ErrorResponse(err))
@@ -61,9 +68,13 @@ func UserChangePwd(c *gin.Context) {
 // UserAddAddress 用户添加一个收货地址
 // 在调用此api前，需要使用jwt中间件验证token
 func UserAddAddress(c *gin.Context) {
-	var serv service.UserAddAddressService
-	if err := c.ShouldBindHeader(&(serv.Header)); err == nil {
-		if err := c.ShouldBind(&(serv.Body)); err == nil {
+	var (
+		userid 		service.UserHeader
+		recvinfo	service.SubUserAddAddressService
+	)
+	if err := c.ShouldBindHeader(&userid); err == nil {
+		if err := c.ShouldBind(&recvinfo); err == nil {
+			serv := service.UserAddAddressService{userid, recvinfo}
 			c.JSON(http.StatusOK, serv.AddAddress())
 		} else {
 			c.JSON(http.StatusOK, ErrorResponse(err))

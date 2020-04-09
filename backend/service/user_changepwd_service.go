@@ -10,13 +10,15 @@ import (
 	"DuckyGo/serializer"
 )
 
+type SubUserChangePwdService struct {
+	OldPwd	string	`form:"password_old" json:"password_old" binding:"required"`
+	NewPwd	string	`form:"password_new" json:"password_new" binding:"required"`
+}
+
 // UserChangePwdService 修改用户密码服务
 type UserChangePwdService struct {
 	Header	UserHeader
-	Pwds 	struct {
-		OldPassword	string		`form:"password_old" json:"password_old" binding:"required"`
-		NewPassword	string		`form:"password_new" json:"password_new" binding:"required"`
-	}
+	Body	SubUserChangePwdService
 }
 
 // ChangePassword 修改密码
@@ -31,7 +33,7 @@ func (serv *UserChangePwdService) ChangePassword() serializer.Response {
 			Msg:  "用户不存在",
 		}
 	}
-	if serv.Pwds.OldPassword != user.Password {
+	if serv.Body.OldPwd != user.Password {
 		return serializer.Response{
 			Code: serializer.UserNamePwdErr,
 			Data: nil,
@@ -39,8 +41,8 @@ func (serv *UserChangePwdService) ChangePassword() serializer.Response {
 		}
 	}
 	// 如果新旧密码不同，则更新密码
-	if serv.Pwds.NewPassword != user.Password {
-		if err := model.DB.Model(&user).Update("password", serv.Pwds.NewPassword).Error;
+	if serv.Body.NewPwd != user.Password {
+		if err := model.DB.Model(&user).Update("password", serv.Body.NewPwd).Error;
 			err != nil {
 			return serializer.Response{
 				Code: serializer.DBWriteErr,

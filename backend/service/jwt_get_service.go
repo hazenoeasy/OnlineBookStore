@@ -11,6 +11,12 @@ import (
 	"time"
 )
 
+// UserHeader 用户授权信息
+// token 由jwt中间件负责验证，因此我们只需要header里面的user_id属性
+type UserHeader struct {
+	UserId  int     `header:"user_id" binding:"required"`
+}
+
 // 返回一个token
 // 如果生成token失败，则返回空字符串和错误
 func NewJwtToken(audience string) (string, error) {

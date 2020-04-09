@@ -5,14 +5,16 @@ import (
     "DuckyGo/serializer"
 )
 
+type SubUserAddAddressService struct {
+    RealName    string      `form:"realname" json:"realname" binding:"required"`
+    Address     string      `form:"address" json:"address" binding:"required"`
+    Phone       string      `form:"phone" json:"phone" binding:"required"`
+}
+
 // UserAddAddressService 增加收货人地址的服务
 type UserAddAddressService struct {
     Header  UserHeader
-    Body    struct {
-        RealName    string      `form:"realname" json:"realname" binding:"required"`
-        Address     string      `form:"address" json:"address" binding:"required"`
-        Phone       string      `form:"phone" json:"phone" binding:"required"`
-    }
+    Body    SubUserAddAddressService
 }
 
 func (u *UserAddAddressService) AddAddress() serializer.Response {
