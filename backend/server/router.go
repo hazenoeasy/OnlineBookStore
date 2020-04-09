@@ -36,14 +36,14 @@ func NewRouter() *gin.Engine {
 		v1.Use(middleware.JwtRequired())
 		{
 			// * 修改用户名
-			v1.PUT("user/modifyUsername", api.UserChangeName)
+			v1.PUT("user/name", api.UserChangeName)
 			// * 修改密码
-			v1.PUT("user/modifyPassword", api.UserChangePwd)
+			v1.PUT("user/password", api.UserChangePwd)
 			// TODO: 注销
 			// * 查看收货地址
-			v1.GET("/user/receiveAddress", api.UserShowAddress)
+			v1.GET("/user/address", api.UserShowAddress)
 			// * 设置收货地址
-			v1.POST("/user/addAddress", api.UserAddAddress)
+			v1.POST("/user/address", api.UserAddAddress)
 		}
 
 		// 订单相关接口:
