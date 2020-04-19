@@ -43,7 +43,7 @@ func InitDB(connString string) {
 		"CASCADE", "CASCADE")
 	DB.Model(&ShoppingCart{}).AddForeignKey("user_id", "users(user_id)",
 		"CASCADE", "CASCADE")
-	DB.Model(&OrderCommodity{}).AddForeignKey("order_id", "orders(order_id",
+	DB.Model(&OrderCommodity{}).AddForeignKey("order_id", "orders(order_id)",
 		"CASCADE", "CASCADE")
 	DB.Model(&OrderCommodity{}).AddForeignKey("book_id", "books(book_id)",
 		"CASCADE", "CASCADE")

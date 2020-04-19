@@ -36,7 +36,7 @@ func UserChangeName(c *gin.Context) {
 	// TODO: 修bug了：目前测试后发现，如果form和header标签在一个结构体里面出现，对改结构体的成员的分别绑定会出现问题，最好导致只有部分的成员绑定成功（出现在结构体靠前位置的成员）
 	if err := c.ShouldBindHeader(&userid); err == nil {
 		if err := c.ShouldBind(&newname); err == nil {
-			serv := service.UserChangeNameService{userid, newname}
+			serv := service.UserChangeNameService{Header: userid, Body: newname}
 			c.JSON(http.StatusOK, serv.ChangeName())
 		} else {
 			c.JSON(http.StatusOK, ErrorResponse(err))
@@ -74,7 +74,7 @@ func UserAddAddress(c *gin.Context) {
 	)
 	if err := c.ShouldBindHeader(&userid); err == nil {
 		if err := c.ShouldBind(&recvinfo); err == nil {
-			serv := service.UserAddAddressService{userid, recvinfo}
+			serv := service.UserAddAddressService{Header: userid, Body: recvinfo}
 			c.JSON(http.StatusOK, serv.AddAddress())
 		} else {
 			c.JSON(http.StatusOK, ErrorResponse(err))
@@ -90,6 +90,17 @@ func UserShowAddress(c *gin.Context) {
 	var serv service.UserShowAddressService
 	if err := c.ShouldBindHeader(&serv); err == nil {
 		c.JSON(http.StatusOK, serv.ShowAddresses())
+	} else {
+		c.JSON(http.StatusOK, ErrorResponse(err))
+	}
+}
+
+// UserDelAddress 删除用户的一个地址
+// 在调用此api前，需要使用jwt中间件验证token
+func UserDelAddress(c *gin.Context)  {
+	var serv service.UserDelAddressService
+	if err := c.ShouldBind(&serv); err == nil {
+		c.JSON(http.StatusOK, serv.DelAddress())
 	} else {
 		c.JSON(http.StatusOK, ErrorResponse(err))
 	}
