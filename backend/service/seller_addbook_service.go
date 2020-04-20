@@ -61,7 +61,7 @@ type SellerAddBookService struct {
 
 func (s *SellerAddBookService) AddBook() serializer.Response {
     // 先把图书封面和描述图书保存在应用服务器上
-    path :=os.Getenv("STATIC_PATH")
+    path := os.Getenv("STATIC_PATH")
     // 如果路径不存在，则创建路径
     _, err := os.Stat(path)
     if err != nil {
@@ -101,6 +101,13 @@ func (s *SellerAddBookService) AddBook() serializer.Response {
         DescpUrl:   strings.ReplaceAll(descpName, `\`, "/"),
     }
     if err = model.DB.Create(&book).Error; err != nil {
+        // 如果文件成功保存，则将其删除
+        switch {
+        case <-coverNotify == "":
+            os.Remove(coverName)
+        case <-descpNotity == "":
+            os.Remove(descpName)
+        }
         return serializer.Response{
             Code: serializer.DBWriteErr,
             Data: err.Error(),
@@ -109,11 +116,18 @@ func (s *SellerAddBookService) AddBook() serializer.Response {
     }
     coverMsg := <- coverNotify
     descpMsg := <- descpNotity
-    if coverMsg != "" || descpMsg != "" {
+    switch {
+    case coverMsg != "":
         return serializer.Response{
             Code: serializer.FileSaveErr,
-            Data: "封面：" + coverMsg + "," + "描述图片" + descpMsg,
-            Msg:  "图书封面/描述图片保存失败",
+            Data: "文件保存：" + coverMsg,
+            Msg:  "封面保存失败",
+        }
+    case descpMsg != "":
+        return serializer.Response{
+            Code: serializer.FileSaveErr,
+            Data: "文件保存：" + descpMsg,
+            Msg:  "描述图片保存失败",
         }
     }
     return serializer.Response{
