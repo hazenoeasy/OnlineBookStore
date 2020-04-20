@@ -6,6 +6,7 @@ import (
     "net/http"
 )
 
+// SellerAddBook 卖家上传二手书信息接口
 func SellerAddBook(c *gin.Context)  {
     var (
         userId  service.UserHeader
@@ -32,6 +33,16 @@ func SellerAddBook(c *gin.Context)  {
         } else {
             c.JSON(http.StatusOK, ErrorResponse(err))
         }
+    } else {
+        c.JSON(http.StatusOK, ErrorResponse(err))
+    }
+}
+
+// SellerShowBook 卖家查看自己售卖的二手书
+func SellerShowBook(c *gin.Context)  {
+    var header service.SellerShowBookService
+    if err := c.ShouldBindHeader(&header); err == nil {
+        c.JSON(http.StatusOK, header.ShowBook())
     } else {
         c.JSON(http.StatusOK, ErrorResponse(err))
     }

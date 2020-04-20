@@ -49,8 +49,8 @@ func NewRouter() *gin.Engine {
 
 			// 上传书籍
 			v1.POST("/user/books", api.SellerAddBook)
-			//// 查看我的卖书
-			//v1.GET("/user/books", api.SellerShowBook)
+			// 查看我的卖书
+			v1.GET("/user/books", api.SellerShowBook)
 			//// 修改卖书信息
 			//v1.PUT("/user/books", api.SellerUpdateBook)
 			//// 删除我的卖书

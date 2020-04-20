@@ -7,6 +7,7 @@ import (
     "os"
     "path/filepath"
     "strconv"
+    "strings"
     "time"
 )
 
@@ -96,8 +97,8 @@ func (s *SellerAddBookService) AddBook() serializer.Response {
         Num:        s.Body.Num,
         SalesNum:   0,
         Kind:       s.Body.Kind,
-        CoverUrl:   coverName,
-        DescpUrl:   descpName,
+        CoverUrl:   strings.ReplaceAll(coverName, `\`, "/"),
+        DescpUrl:   strings.ReplaceAll(descpName, `\`, "/"),
     }
     if err = model.DB.Create(&book).Error; err != nil {
         return serializer.Response{
