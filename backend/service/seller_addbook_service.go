@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -59,14 +58,13 @@ func (s *SellerAddBookService) AddBook() serializer.Response {
 		path   = os.Getenv("STATIC_PATH")
 		userId = strconv.Itoa(s.Header.UserId)
 		now    = strconv.FormatInt(time.Now().Unix(), 10)
+		coverName 	= filepath.Join(path, userId+"cover"+now+s.Body.Cover.Filename)
+		descpName 	= filepath.Join(path, userId+"descp"+now+s.Body.Descp.Filename)
+		descNotify 	= make(chan error, 1)
+		coverNotify = make(chan error, 1)
 	)
-	// 保存封面
-	coverName := filepath.Join(path, userId+"cover"+now+s.Body.Cover.Filename)
-	coverNotify := make(chan error, 1)
+	// 保存封面和描述图片
 	go s.Body.Cover.SaveUploadFile(coverName, coverNotify)
-	// 保存描述图片
-	descpName := filepath.Join(path, userId+"descp"+now+s.Body.Descp.Filename)
-	descNotify := make(chan error, 1)
 	go s.Body.Descp.SaveUploadFile(descpName, descNotify)
 
 	// 图书信息写入数据库
@@ -78,8 +76,8 @@ func (s *SellerAddBookService) AddBook() serializer.Response {
 		Num:        s.Body.Num,
 		SalesNum:   0,
 		Kind:       s.Body.Kind,
-		CoverUrl:   strings.ReplaceAll(coverName, `\`, "/"),
-		DescpUrl:   strings.ReplaceAll(descpName, `\`, "/"),
+		CoverUrl:   filepath.ToSlash(coverName),
+		DescpUrl:   filepath.ToSlash(descpName),
 	}
 	tx := model.DB.Begin()
 	if err := tx.Create(&book).Error; err != nil {

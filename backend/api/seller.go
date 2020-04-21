@@ -84,3 +84,14 @@ func SellerUpdateBook(c *gin.Context)  {
         c.JSON(http.StatusOK, ErrorResponse(err))
     }
 }
+
+// SellerDelBook 卖家删除书籍信息
+func SellerDelBook(ctx *gin.Context)  {
+    var bookId  service.SubDelBookServiceBody
+    if err := ctx.ShouldBind(&bookId); err == nil {
+        serv := service.SellerDelBookService{Body: bookId}
+        ctx.JSON(http.StatusOK, serv.DelBook())
+    } else {
+        ctx.JSON(http.StatusOK, ErrorResponse(err))
+    }
+}

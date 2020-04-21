@@ -28,6 +28,9 @@ func NewRouter() *gin.Engine {
 	{
 		v1.GET("ping", api.Ping)
 
+		// 主页部分的接口：
+		v1.GET("books/search", api.SearchBook)
+
 		// 用户相关接口:
 		// * 注册
 		v1.POST("user/register", api.UserRegister)
@@ -47,6 +50,7 @@ func NewRouter() *gin.Engine {
 			// * 删除收货地址
 			v1.DELETE("/user/address", api.UserDelAddress)
 
+			// 卖家相关接口
 			// 上传书籍
 			v1.POST("/user/books", api.SellerAddBook)
 			// 查看我的卖书
@@ -54,7 +58,7 @@ func NewRouter() *gin.Engine {
 			// 修改卖书信息
 			v1.PUT("/user/books", api.SellerUpdateBook)
 			//// 删除我的卖书
-			//v1.DELETE("/user/books", api.SellerDelBook)
+			v1.DELETE("/user/books", api.SellerDelBook)
 		}
 
 		// 订单相关接口:

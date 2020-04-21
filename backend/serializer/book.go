@@ -5,21 +5,21 @@ import (
 )
 
 type ShowBookData struct {
-    Id          int     `form:"id" json:"id" binding:"required"`
-    Title       string  `form:"title" json:"title" binding:"required"`
-    Author      string  `form:"author" json:"author" binding:"required"`
-    Kind        string  `form:"kind" json:"kind" binding:"required"`
-    Cover       string  `form:"cover" json:"cover" binding:"required"`
-    Price       int     `form:"price" json:"price" binding:"required"`
-    SalesNum    int     `form:"salesnum" json:"sales_num" binding:"required"`
-    Num         int     `form:"num" json:"num" binding:"required"`
-    Descp       string  `form:"descp" json:"descp" binding:"required"`
+    Id          int     `json:"id"`
+    Title       string  `json:"title"`
+    Author      string  `json:"author"`
+    Kind        string  `json:"kind"`
+    Cover       string  `json:"cover"`
+    Price       int     `json:"price"`
+    SalesNum    int     `json:"sales_num"`
+    Num         int     `json:"num"`
+    Descp       string  `json:"descp"`
 }
 
 type ShowBookRespData struct {
-    Pages   int     `form:"pages" json:"pages" binding:"required"`
-    Items   int     `form:"items" json:"items" binding:"required"`
-    Item    []ShowBookData    `json:"item" json:"item" binding:"required"`
+    Pages   int             `json:"pages""`
+    Items   int             `json:"items"`
+    Item    []ShowBookData  `json:"item"`
 }
 
 func NewShowBookRespData(books []model.Book, pages int) ShowBookRespData {

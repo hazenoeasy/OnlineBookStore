@@ -3,6 +3,7 @@ package api
 import (
 	"DuckyGo/conf"
 	"DuckyGo/serializer"
+	"DuckyGo/service"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,16 @@ func Ping(c *gin.Context) {
 	c.JSON(http.StatusOK, serializer.Response{
 		Msg: "Pong",
 	})
+}
+
+// SearchBook 搜索书籍
+func SearchBook(ctx *gin.Context)  {
+	var serv service.SearchBooksService
+	if err := ctx.ShouldBindQuery(&serv); err == nil {
+		ctx.JSON(http.StatusOK, serv.Search())
+	} else {
+		ctx.JSON(http.StatusOK, ErrorResponse(err))
+	}
 }
 
 // ErrorResponse 返回错误消息

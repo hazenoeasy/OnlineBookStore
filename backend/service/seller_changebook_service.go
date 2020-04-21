@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -68,10 +67,10 @@ func (p *SellerChangeBookService) ChangeBook() serializer.Response {
 		modify["kind"] = *(p.Body.Kind)
 	}
 	if p.Body.Cover != nil {
-		modify["cover_url"] = strings.ReplaceAll(coverName, `\`, "/")
+		modify["cover_url"] = filepath.ToSlash(coverName)
 	}
 	if p.Body.Descp != nil {
-		modify["descp_url"] = strings.ReplaceAll(descpName, `\`, "/")
+		modify["descp_url"] = filepath.ToSlash(descpName)
 	}
 
 	tx := model.DB.Begin()
