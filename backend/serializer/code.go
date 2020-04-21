@@ -28,4 +28,7 @@ const (
 
 	// 请求格式错误
 	RequestParamErr 	=	50003
+
+	// 文件保存失败
+	FileSaveErr 		=	50004
 )

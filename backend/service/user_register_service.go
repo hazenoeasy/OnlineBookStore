@@ -42,6 +42,11 @@ func (service *UserRegisterService) Register() serializer.Response {
 	if err := UserName(service.UserName).Valid(); err != nil {
 		return *err
 	}
+	// 备注：
+	// 此处没有将《查询用户名是否已经注册》和《创建用户》放进一个事务中，
+	// 这是因为：数据库的username字段为UNIQUE，当相同的username试图插入时，
+	// 	数据库会终止操作。
+	// 如果出现这种情况，我们直接返回错误响应报文就行了
 
 	//// 加密密码
 	//if err := user.SetPassword(service.Password); err != nil {

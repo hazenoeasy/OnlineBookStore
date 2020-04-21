@@ -17,6 +17,9 @@ type UserAddAddressService struct {
     Body    SubUserAddAddressService
 }
 
+// AddAddress 在数据库中新增一条地址
+// 返回JSON格式的响应报文
+// 此函数可重入
 func (u *UserAddAddressService) AddAddress() serializer.Response {
     recv := model.RecvInfo{
         UserId:     u.Header.UserId,

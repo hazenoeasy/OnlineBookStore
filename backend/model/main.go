@@ -30,7 +30,9 @@ func InitDB(connString string) {
 
 	DB = db
 	// 自动迁移
-	DB.AutoMigrate(&Book{}, &Order{}, &RecvInfo{}, &ShoppingCart{}, &User{})
+	DB.AutoMigrate(&Book{}, &Order{}, &OrderCommodity{}, &RecvInfo{}, &ShoppingCart{}, &User{})
+	DB.Model(&Book{}).AddForeignKey("salesman_id", "users(user_id)",
+		"CASCADE", "CASCADE")
 	DB.Model(&RecvInfo{}).AddForeignKey("user_id", "users(user_id)",
 		"CASCADE", "CASCADE")
 	DB.Model(&Order{}).AddForeignKey("user_id", "users(user_id)",
@@ -40,5 +42,9 @@ func InitDB(connString string) {
 	DB.Model(&ShoppingCart{}).AddForeignKey("book_id", "books(book_id)",
 		"CASCADE", "CASCADE")
 	DB.Model(&ShoppingCart{}).AddForeignKey("user_id", "users(user_id)",
+		"CASCADE", "CASCADE")
+	DB.Model(&OrderCommodity{}).AddForeignKey("order_id", "orders(order_id)",
+		"CASCADE", "CASCADE")
+	DB.Model(&OrderCommodity{}).AddForeignKey("book_id", "books(book_id)",
 		"CASCADE", "CASCADE")
 }

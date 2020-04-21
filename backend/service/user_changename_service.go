@@ -20,7 +20,9 @@ type UserChangeNameService struct {
     Body        SubUserChangeNameService
 }
 
-// 更改用户名
+// ChangeName 更改用户名
+// 返回JSON格式的响应报文
+// 可重入
 func (s *UserChangeNameService) ChangeName() serializer.Response {
     // 由于使用了middleware/jwt.go/JwtRequired()中间件，
     // 此处不再需要重新验证token
@@ -29,16 +31,14 @@ func (s *UserChangeNameService) ChangeName() serializer.Response {
     if err := UserName(s.Body.NewName).Valid(); err != nil {
         return *err
     }
+    // 备注：
+    // 此处没有将《查询用户名是否已经注册》和《修改用户名》放进一个事务中，
+    // 这是因为：数据库的username字段为UNIQUE，当相同的username试图插入时，
+    // 	数据库会终止操作。
+    // 如果出现这种情况，我们直接返回错误响应报文就行了
 
     // 修改用户名
     user := model.User{ UserId: s.Header.UserId, }
-    //if err := model.DB.First(&user, "user_id = ?", s.Header.UserId).Error; err != nil {
-    //    return serializer.Response{
-    //        Code: serializer.UserNamePwdErr,
-    //        Data: err,
-    //        Msg:  "用户不存在",
-    //    }
-    //}
     if err := model.DB.Model(&user).Update("user_name", s.Body.NewName).Error; err != nil {
         return serializer.Response{
             Code: serializer.DBWriteErr,

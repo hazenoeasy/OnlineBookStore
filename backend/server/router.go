@@ -28,6 +28,9 @@ func NewRouter() *gin.Engine {
 	{
 		v1.GET("ping", api.Ping)
 
+		// 主页部分的接口：
+		v1.GET("books/search", api.SearchBook)
+
 		// 用户相关接口:
 		// * 注册
 		v1.POST("user/register", api.UserRegister)
@@ -36,14 +39,26 @@ func NewRouter() *gin.Engine {
 		v1.Use(middleware.JwtRequired())
 		{
 			// * 修改用户名
-			v1.PUT("user/modifyUsername", api.UserChangeName)
+			v1.PUT("user/name", api.UserChangeName)
 			// * 修改密码
-			v1.PUT("user/modifyPassword", api.UserChangePwd)
+			v1.PUT("user/password", api.UserChangePwd)
 			// TODO: 注销
 			// * 查看收货地址
-			v1.GET("/user/receiveAddress", api.UserShowAddress)
+			v1.GET("/user/address", api.UserShowAddress)
 			// * 设置收货地址
-			v1.POST("/user/addAddress", api.UserAddAddress)
+			v1.POST("/user/address", api.UserAddAddress)
+			// * 删除收货地址
+			v1.DELETE("/user/address", api.UserDelAddress)
+
+			// 卖家相关接口
+			// 上传书籍
+			v1.POST("/user/books", api.SellerAddBook)
+			// 查看我的卖书
+			v1.GET("/user/books", api.SellerShowBook)
+			// 修改卖书信息
+			v1.PUT("/user/books", api.SellerUpdateBook)
+			//// 删除我的卖书
+			v1.DELETE("/user/books", api.SellerDelBook)
 		}
 
 		// 订单相关接口:
