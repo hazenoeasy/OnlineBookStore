@@ -2,7 +2,7 @@
  * 描述：此文件提供文件的上传、撤销上传、删除服务
  *      文件的保存位置取决于环境变量STATIC_PATH（参考.env.example）
  * 作者：zhangshaos
- * TODO：目前这个服务还没构思好，文件上传请参考seller_addbook_service.go
+ * XXX：目前这个服务还没构思好，文件上传请参考seller_addbook_service.go
  ***********************************************************/
 
 package service

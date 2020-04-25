@@ -31,7 +31,6 @@ func NewRouter() *gin.Engine {
 		// 主页部分的接口：
 		v1.GET("books/search", api.SearchBook)
 
-		// 用户相关接口:
 		// * 注册
 		v1.POST("user/register", api.UserRegister)
 		// * 登录
@@ -42,13 +41,23 @@ func NewRouter() *gin.Engine {
 			v1.PUT("user/name", api.UserChangeName)
 			// * 修改密码
 			v1.PUT("user/password", api.UserChangePwd)
-			// TODO: 注销
 			// * 查看收货地址
 			v1.GET("/user/address", api.UserShowAddress)
 			// * 设置收货地址
 			v1.POST("/user/address", api.UserAddAddress)
 			// * 删除收货地址
 			v1.DELETE("/user/address", api.UserDelAddress)
+
+			// 添加到购物车中
+			v1.POST("/user/cart", api.UserAddCart)
+			// 查看购物车内容
+			v1.GET("/user/cart", api.UserShowCart)
+			// 从购物车中删除
+			v1.DELETE("/user/cart", api.UserDelCart)
+			// 购物车结算
+			v1.POST("/user/order", api.UserCreateOrder)
+			// 付款
+			v1.PUT("/user/order", api.UserPayOrder)
 
 			// 卖家相关接口
 			// 上传书籍
@@ -60,22 +69,6 @@ func NewRouter() *gin.Engine {
 			//// 删除我的卖书
 			v1.DELETE("/user/books", api.SellerDelBook)
 		}
-
-		// 订单相关接口:
-		// * 创建订单
-		// * 根据订单状态查询所有订单
-		// * 支付
-		// * 删除订单
-		// * 查看购物车
-		// * 添加到购物车
-		// TODO: 从购物车中删除
-
-		// 书籍相关接口:
-		// * 书籍展示列表
-		// * 查询书籍详细信息
-		// * 新增书籍
-		// * 删除书籍
-		// * 修改书籍
 	}
 
 	return r

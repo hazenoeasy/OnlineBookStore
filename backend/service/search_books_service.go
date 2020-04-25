@@ -11,7 +11,7 @@ type SearchBooksService struct {
     Items   int     `form:"items" json:"items" binding:"required"`
 }
 
-// TODO：此函数内部使用了两次全文搜索（索引失效），因此性能较差，有待优化
+// XXX：此函数内部使用了两次全文搜索（索引失效），因此性能较差，有待优化
 func (this *SearchBooksService) Search() serializer.Response {
     var (
     	books   []model.Book
