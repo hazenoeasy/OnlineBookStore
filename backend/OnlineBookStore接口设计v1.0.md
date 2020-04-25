@@ -78,6 +78,7 @@ Response Body：
 | price    | int          | 价格            | 36                      |
 | salesnum | int          | 销量            | 12                      |
 | descp    | string       | 详细描述图的URL | “/static/descp/123.png” |
+| id       | int          | 书籍的id        | 1                       |
 
 ```json
 // GET /api/v1/books/search?name=高数&page=1&item=4
@@ -88,6 +89,7 @@ Response Body：
         "items": 	2,
         "item":		[
             {
+                "id":		2,
                 "title":	"高等数学",
                 "author":	"张宇昊",
                 "cover":	"/static/cover/123.png",
@@ -96,6 +98,7 @@ Response Body：
                 "descp":	"/static/descp/123.png"
             },
             {
+                "id":		3,
                 "title":	"高等数学",
                 "author":	"",
                 "cover":	"/static/cover/124.png",
@@ -111,7 +114,7 @@ Response Body：
 
 #### ~~2.分类浏览~~
 
-#### 3.推荐热销书籍
+#### ~~3.推荐热销书籍~~
 
 描述：系统向用户推荐的书籍
 
@@ -137,6 +140,7 @@ Response Body：
 | price    | int          | 价格            | 36                      |
 | salesnum | int          | 销量            | 12                      |
 | descp    | string       | 详细描述图的URL | “/static/descp/123.png” |
+| id       | int          | 书籍id          | 1                       |
 
 ```json
 {
@@ -146,6 +150,7 @@ Response Body：
         "items": 	2,
         "item":		[
             {
+                "id":		2,
                 "title":	"高等数学",
                 "author":	"张宇昊",
                 "cover":	"/static/cover/123.png",
@@ -154,6 +159,7 @@ Response Body：
                 "descp":	"/static/descp/123.png"
             },
             {
+                "id":		3,
                 "title":	"高等数学",
                 "author":	"",
                 "cover":	"/static/cover/124.png",
@@ -434,15 +440,223 @@ Response Body：
 
 
 
-### ~~购物车~~
+### 购物车
 
 #### 1.添加到购物车
 
+描述：将书籍加入用户的车中
+
+方法：POST /api/v1/user/cart
+
+Request Header:
+
+| 字段名  | 类型   | 描述       | 例子      |
+| ------- | ------ | ---------- | --------- |
+| user_id | int    | 用户的id号 | 12        |
+| token   | string | jwt        | fe32af... |
+
+Request Body:
+
+| 字段名 | 类型   | 描述             | 例子             |
+| ------ | ------ | ---------------- | ---------------- |
+| id     | int    | 书籍的id         | 12               |
+| name   | string | 书名             | 高等数学         |
+| price  | int    | 图书单价         | 45               |
+| cover  | string | 封面url          | static/323xx.png |
+| num    | int    | 加入购物车的数量 | 1                |
+
+Response Body：
+
+```json
+{
+    "code":	20000,
+    "data":	null,
+    "msg":	"ok"
+}
+```
+
+
+
 #### 2.查看购物车内容
+
+描述：用户查看自己的购物车
+
+方法：GET /api/v1/user/cart
+
+Request Header:
+
+| 字段名  | 类型   | 描述       | 例子      |
+| ------- | ------ | ---------- | --------- |
+| user_id | int    | 用户的id号 | 12        |
+| token   | string | jwt        | fe32af... |
+
+Response Body:
+
+| 字段名 | 类型         | 描述             | 例子             |
+| ------ | ------------ | ---------------- | ---------------- |
+| id     | int          | 书籍的id         | 12               |
+| name   | string       | 书名             | 高等数学         |
+| price  | int          | 图书单价         | 45               |
+| cover  | string       | 封面url          | static/323xx.png |
+| num    | int          | 加入购物车的数量 | 1                |
+| item   | json对象数组 | 购物车内的商品   |                  |
+| items  | int          | item字段的长度   |                  |
+
+```json
+{
+    "code":	20000,
+    "data":	{
+        items:	2,
+        item:	[
+            {
+                "id":		23,
+                "name":		"高等数学",
+                "price":	45,
+                "cover":	"static/323cover23.png",
+                "num":		1
+            },
+            {
+                "id":		24,
+                "name":		"高等数学2",
+                "price":	45,
+                "cover":	"static/323cover24.png",
+                "num":		1
+            }
+        ]
+    },
+    "msg":	"ok"
+}
+```
+
+
 
 #### 3.从购物车中删除
 
+描述：用户从购物车中删除某个商品
+
+方法：DEL /api/v1/user/cart
+
+Request Header：
+
+| 字段名  | 类型   | 描述       | 例子      |
+| ------- | ------ | ---------- | --------- |
+| user_id | int    | 用户的id号 | 12        |
+| token   | string | jwt        | fe32af... |
+
+Request Body：
+
+| 字段名  | 类型 | 描述       | 例子 |
+| ------- | ---- | ---------- | ---- |
+| book_id | int  | 二手书的id | 12   |
+
+Response Body：
+
+```json
+{
+    "code":	20000,
+    "data":	null,
+    "msg":	"ok"
+}
+```
+
+
+
 #### 4、购物结算
+
+描述：用户结算购物车中的商品，并生成订单
+
+方法：POST /api/v1/user/order
+
+Request Header:
+
+| 字段名  | 类型   | 描述       | 例子      |
+| ------- | ------ | ---------- | --------- |
+| user_id | int    | 用户的id号 | 12        |
+| token   | string | jwt        | fe32af... |
+
+Request Body(**use JSON not form**)：
+
+| 字段名 | 类型   | 描述                     | 例子      |
+| ------ | ------ | ------------------------ | --------- |
+| addr_id | int | 收货地址的id | 12 |
+| cart_items | int    | 结算商品中不同书籍的数量 | 2        |
+| cart_item | JSON对象数组 | 购物车中商品数据      |  |
+| id | int | 书籍的id |  |
+| num | int | 同种书籍的数量 |  |
+
+```json
+{
+    "addr_id":		12,
+    "cart_items":	2,
+    "cart_item":	[
+        {
+            "id":	2,
+            "num":	1
+        },
+        {
+            "id":	12,
+            "num":	1
+        }
+    ]
+}
+```
+
+Response Body：
+
+```json
+{
+    "code":	20000,
+    "data":	null,
+    "msg":	"ok"
+}
+```
+
+
+
+
+
+#### 5、付款（测试版为假付款）
+
+描述：虚假的订单付款
+
+方法：PUT /api/v1/user/order
+
+Request Header:
+
+| 字段名  | 类型   | 描述       | 例子      |
+| ------- | ------ | ---------- | --------- |
+| user_id | int    | 用户的id号 | 12        |
+| token   | string | jwt        | fe32af... |
+
+Request Body:
+
+| 字段名   | 类型 | 描述     | 例子 |
+| -------- | ---- | -------- | ---- |
+| order_id | int  | 订单的id | 12   |
+
+Response Body：
+
+```json
+{
+    "code":	20000,
+    "data":	null,
+    "msg":	"ok"
+}
+```
+
+
+
+### 订单管理
+
+#### 1.查看我的订单
+
+> **订单状态**：
+>
+> 0-未付款；1-用户已经付款，但卖家未发货；2-卖家已发货；3-订单已结束
+
+####  2.退/换商品
+
+#### 3.确认收货
 
 
 
@@ -629,6 +843,12 @@ Response Body：
 
 #### 2、订单处理-发货
 
+
+
+### ~~数据统计~~
+
+
+
 ---
 
 
@@ -640,3 +860,8 @@ Response Body：
 #### 1、图书分类设定
 
 #### 2、公告内容设定
+
+
+
+### ~~后台数据统计~~
+
