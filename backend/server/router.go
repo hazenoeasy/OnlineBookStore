@@ -73,6 +73,11 @@ func NewRouter() *gin.Engine {
 			v1.PUT("/user/books", api.SellerUpdateBook)
 			//// 删除我的卖书
 			v1.DELETE("/user/books", api.SellerDelBook)
+
+			// 查看订单
+			v1.GET("/user/seller/order", api.SellerShowOrder)
+			// 订单发货
+			v1.POST("/user/commodity", api.SellerPostCommodity)
 		}
 	}
 

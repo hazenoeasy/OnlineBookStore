@@ -574,32 +574,13 @@ Request Header:
 | user_id | int    | 用户的id号 | 12        |
 | token   | string | jwt        | fe32af... |
 
-Request Body(**use JSON not form**)：
+Request Body：
 
 | 字段名 | 类型   | 描述                     | 例子      |
 | ------ | ------ | ------------------------ | --------- |
 | addr_id | int | 收货地址的id | 12 |
-| cart_items | int    | 结算商品中不同书籍的数量 | 2        |
-| cart_item | JSON对象数组 | 购物车中商品数据      |  |
-| id | int | 书籍的id |  |
-| num | int | 同种书籍的数量 |  |
-
-```json
-{
-    "addr_id":		12,
-    "cart_items":	2,
-    "cart_item":	[
-        {
-            "id":	2,
-            "num":	1
-        },
-        {
-            "id":	12,
-            "num":	1
-        }
-    ]
-}
-```
+| id | int | 书籍的id | 1 |
+| num | int | 书籍的数量 | 1 |
 
 Response Body：
 
@@ -665,16 +646,16 @@ Request Header:
 
 Response Body：
 
-| 字段名 | 类型     | 描述         | 例子   |
-| ------ | -------- | ------------ | ------ |
-| items  | int      | 订单项的数量 | 2      |
-| item   | json对象 | 订单项       |        |
-| id     | int      | 订单id       | 123    |
-| price  | int      | 订单价格     | 98     |
-| status | int      | 描述订单状态 | 1      |
-| books  | json对象 | 订单的书籍   |        |
-| title  | string   | 书名         | “高数” |
-| num    | int      | 书的购买量   | 1      |
+| 字段名  | 类型     | 描述         | 例子     |
+| ------- | -------- | ------------ | -------- |
+| items   | int      | 订单项的数量 | 2        |
+| item    | json对象 | 订单项       |          |
+| id      | int      | 订单id       | 123      |
+| status  | int      | 描述订单状态 | 1        |
+| title   | string   | 书名         | “高数”   |
+| price   | int      | 订单价格     | 98       |
+| num     | int      | 书的购买量   | 1        |
+| express | string   | 快递号       | “230230” |
 
 **订单状态**：
 
@@ -688,25 +669,19 @@ Response Body：
         "item":		[
             {
                 "id":		123,
-                "price":	98,
-                "books":	[
-                    {
-                        "title":	"高数",
-                        "num":		1
-                    }
-                ],
-                "status":	1
+                "status":	1,
+                "title":	"高数",
+                "price":	44,
+                "num":		1,
+                "express":	""
             },
             {
-                "id":		234,
-                "price":	129,
-                "books":	[
-                    {
-                        "title":	"高数2",
-                        "num":		1
-                    }
-                ],
-                "status":	1
+                "id":		134,
+                "status":	2,
+                "title":	"高数2",
+                "price":	40,
+                "num":		1,
+                "express":	"1298823910012"
             }
         ]
     },
@@ -926,11 +901,107 @@ Response Body：
 }
 ```
 
-### ~~订单管理~~
+### 订单管理
 
-#### 1、查看我的订单
+#### 1、卖家查看订单
+
+描述：商家查看自己的订单（包括需要处理的和已经结束的订单）
+
+方法：GET /api/v1/user/seller/order
+
+Request Header:
+
+| 字段名  | 类型   | 描述              | 例子      |
+| ------- | ------ | ----------------- | --------- |
+| user_id | int    | 用户的id号        | 12        |
+| token   | string | jwt               | fe32af... |
+| page    | int    | 订单页数，初值为1 | 1         |
+| items   | int    | 每页订单数量      | 4         |
+| status  | int    | 订单状态          | 1         |
+
+**订单状态**：
+
+>  0-未付款；1-用户已经付款，但卖家未发货；2-卖家已发货；3-订单已结束
+
+Response Body：
+
+| 字段名         | 类型     | 描述         | 例子          |
+| -------------- | -------- | ------------ | ------------- |
+| items          | int      | 订单项的数量 | 2             |
+| item           | json对象 | 订单项       |               |
+| id             | int      | 订单id       | 123           |
+| status         | int      | 描述订单状态 | 1             |
+| title          | string   | 书名         | “高数”        |
+| price          | int      | 订单价格     | 98            |
+| num            | int      | 书的购买量   | 1             |
+| express        | string   | 快递号       | “230230”      |
+| consumer_name  | string   | 买家姓名     | “bxh”         |
+| consumer_addr  | string   | 买家地址     | “河北省涞”    |
+| consumer_phone | string   | 买家手机号码 | “17248429312” |
+
+```json
+{
+    "code": 20000,
+    "data":	{
+     	"items":	2,
+        "item":		[
+            {
+                "id":				123,
+                "status":			1,
+                "title":			"高数",
+                "price":			44,
+                "num":				1,
+                "express":			"",
+                "consumer_name":	"bxh",
+                "consumer_addr":	"河北省",
+                "consumer_phone":	"1482918219"
+            },
+            {
+                "id":		134,
+                "status":	2,
+                "title":	"高数2",
+                "price":	40,
+                "num":		1,
+                "express":	"1298823910012",
+                "consumer_name":	"bxh",
+                "consumer_addr":	"河北省",
+                "consumer_phone":	"1482918219"
+            }
+        ]
+    },
+    "msg":	"ok"
+}
+```
+
 
 #### 2、订单处理-发货
+
+描述：商家发货
+
+方法：POST /api/v1/user/commodity
+
+Request Header:
+
+| 字段名  | 类型   | 描述       | 例子      |
+| ------- | ------ | ---------- | --------- |
+| user_id | int    | 用户的id号 | 12        |
+| token   | string | jwt        | fe32af... |
+
+Request Body:
+
+| 字段名   | 类型 | 描述     | 例子 |
+| -------- | ---- | -------- | ---- |
+| order_id | int  | 订单的id | 12   |
+
+Response Body：
+
+```json
+{
+    "code":	20000,
+    "data":	null,
+    "msg":	"ok"
+}
+```
 
 
 

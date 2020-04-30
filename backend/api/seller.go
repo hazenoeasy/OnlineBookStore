@@ -95,3 +95,31 @@ func SellerDelBook(ctx *gin.Context)  {
         ctx.JSON(http.StatusOK, ErrorResponse(err))
     }
 }
+
+// SellerShowOrder 卖家查看订单信息
+func SellerShowOrder(ctx *gin.Context) {
+    var serv service.SellerShowOrderService
+    if err := ctx.ShouldBindHeader(&serv); err == nil {
+        ctx.JSON(http.StatusOK, serv.ShowOrder())
+    } else {
+        ctx.JSON(http.StatusOK, ErrorResponse(err))
+    }
+}
+
+// SellerPostCommodity 卖家发货
+func SellerPostCommodity(ctx *gin.Context)  {
+    var (
+        header 	service.UserHeader
+        body 	service.BodyPostCommodityService
+    )
+    if err := ctx.ShouldBindHeader(&header); err == nil {
+        if err = ctx.ShouldBind(&body); err == nil {
+            serv := service.PostCommodityService{Header: header, Body: body}
+            ctx.JSON(http.StatusOK, serv.PostCommodity())
+        } else {
+            ctx.JSON(http.StatusOK, ErrorResponse(err))
+        }
+    } else {
+        ctx.JSON(http.StatusOK, ErrorResponse(err))
+    }
+}
