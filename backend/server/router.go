@@ -59,6 +59,11 @@ func NewRouter() *gin.Engine {
 			// 付款
 			v1.PUT("/user/order", api.UserPayOrder)
 
+			// 用户查看购物订单
+			v1.GET("/user/order", api.UserShowOrder)
+			// 用户确认收货
+			v1.PUT("/user/commodity", api.UserGetCommodity)
+
 			// 卖家相关接口
 			// 上传书籍
 			v1.POST("/user/books", api.SellerAddBook)

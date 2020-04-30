@@ -650,13 +650,102 @@ Response Body：
 
 #### 1.查看我的订单
 
-> **订单状态**：
->
-> 0-未付款；1-用户已经付款，但卖家未发货；2-卖家已发货；3-订单已结束
+描述：查看我的购物订单
 
-####  2.退/换商品
+方法：GET /api/v1/user/order
+
+Request Header:
+
+| 字段名  | 类型   | 描述              | 例子      |
+| ------- | ------ | ----------------- | --------- |
+| user_id | int    | 用户的id号        | 12        |
+| token   | string | jwt               | fe32af... |
+| page    | int    | 订单页数，初值为1 | 1         |
+| items   | int    | 每页订单数量      | 4         |
+
+Response Body：
+
+| 字段名 | 类型     | 描述         | 例子   |
+| ------ | -------- | ------------ | ------ |
+| items  | int      | 订单项的数量 | 2      |
+| item   | json对象 | 订单项       |        |
+| id     | int      | 订单id       | 123    |
+| price  | int      | 订单价格     | 98     |
+| status | int      | 描述订单状态 | 1      |
+| books  | json对象 | 订单的书籍   |        |
+| title  | string   | 书名         | “高数” |
+| num    | int      | 书的购买量   | 1      |
+
+**订单状态**：
+
+>  0-未付款；1-用户已经付款，但卖家未发货；2-卖家已发货；3-订单已结束
+
+```json
+{
+    "code": 20000,
+    "data":	{
+     	"items":	2,
+        "item":		[
+            {
+                "id":		123,
+                "price":	98,
+                "books":	[
+                    {
+                        "title":	"高数",
+                        "num":		1
+                    }
+                ],
+                "status":	1
+            },
+            {
+                "id":		234,
+                "price":	129,
+                "books":	[
+                    {
+                        "title":	"高数2",
+                        "num":		1
+                    }
+                ],
+                "status":	1
+            }
+        ]
+    },
+    "msg":	"ok"
+}
+```
+
+
+
+####  ~~2.退/换商品~~
 
 #### 3.确认收货
+
+描述：用户确认收货，完成订单处理
+
+方法：PUT /api/v1/user/commodity
+
+Request Header:
+
+| 字段名  | 类型   | 描述       | 例子      |
+| ------- | ------ | ---------- | --------- |
+| user_id | int    | 用户的id号 | 12        |
+| token   | string | jwt        | fe32af... |
+
+Request Body:
+
+| 字段名   | 类型 | 描述     | 例子 |
+| -------- | ---- | -------- | ---- |
+| order_id | int  | 订单的id | 12   |
+
+Response Body：
+
+```json
+{
+    "code":	20000,
+    "data":	null,
+    "msg":	"ok"
+}
+```
 
 
 

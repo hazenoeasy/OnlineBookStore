@@ -187,3 +187,31 @@ func UserPayOrder(ctx *gin.Context)  {
 		ctx.JSON(http.StatusOK, ErrorResponse(err))
 	}
 }
+
+// UserShowOrder 查看购物订单
+func UserShowOrder(ctx *gin.Context)  {
+	var serv service.OrderShowService
+	if err := ctx.ShouldBindHeader(&serv); err == nil {
+		ctx.JSON(http.StatusOK, serv.ShowOrder())
+	} else {
+		ctx.JSON(http.StatusOK, ErrorResponse(err))
+	}
+}
+
+// UserGetCommodity 用户确认收货
+func UserGetCommodity(ctx *gin.Context)  {
+	var (
+		header 	service.UserHeader
+		body 	service.BodyGetCommodityService
+	)
+	if err := ctx.ShouldBindHeader(&header); err == nil {
+		if err = ctx.ShouldBind(&body); err == nil {
+			serv := service.GetCommodityService{Header: header, Body: body}
+			ctx.JSON(http.StatusOK, serv.OrderGetCommodity())
+		} else {
+			ctx.JSON(http.StatusOK, ErrorResponse(err))
+		}
+	} else {
+		ctx.JSON(http.StatusOK, ErrorResponse(err))
+	}
+}
