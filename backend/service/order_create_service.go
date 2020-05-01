@@ -1,9 +1,11 @@
 package service
 
 import (
+    "DuckyGo/cache/hotRank"
     "DuckyGo/model"
     "DuckyGo/serializer"
     "fmt"
+    "strconv"
     "time"
 )
 
@@ -27,7 +29,8 @@ func (this *OrderCreateService) CreateOrder() serializer.Response {
 
     // 先查询商品库存
     book := model.Book{BookId: this.Body.Id}
-    if err := tx.Select("book_id,salesman_id,title,price,num,salesnum").Find(&book).Error; err != nil {
+    if err := tx.Select("book_id,salesman_id,title,author,kind,num,price,salesnum,cover_url,descp_url").
+        Find(&book).Error; err != nil {
             tx.Rollback()
         return serializer.Response{
             Code: serializer.DBReadErr,
@@ -49,8 +52,9 @@ func (this *OrderCreateService) CreateOrder() serializer.Response {
             }
         } else {
             // 更新数据
-            if err := model.DB.Model(&book).Updates(model.Book{Num:book.Num-buyNum, SalesNum:book.SalesNum+buyNum}).Error;
-                err != nil {
+            // FIXME: GORM只更新非零值，如果num==buynum（书卖完），则忽视更新
+            data := map[string]interface{}{"num":book.Num-buyNum,"salesnum":book.SalesNum+buyNum}
+            if err := model.DB.Model(&book).Updates(data).Error; err != nil {
                 tx.Rollback()
                 return serializer.Response{
                     Code: serializer.DBWriteErr,
@@ -86,6 +90,13 @@ func (this *OrderCreateService) CreateOrder() serializer.Response {
     }
 
     tx.Commit()
+
+    // 更新热榜服务
+    if hotRank.HOT.IsExisted(book.BookId) {
+        hotRank.HOT.Update(strconv.Itoa(book.BookId), float64(buyNum))
+    } else {
+        hotRank.HOT.Add(&book)
+    }
 
     return serializer.Response{
         Code: serializer.OpSuccess,

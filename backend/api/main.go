@@ -33,6 +33,16 @@ func SearchBook(ctx *gin.Context)  {
 	}
 }
 
+// RecommendBook 系统推荐热榜书籍
+func RecommendBook(ctx *gin.Context) {
+	var serv service.RecommendBooksService
+	if err := ctx.ShouldBindHeader(&serv); err == nil {
+		ctx.JSON(http.StatusOK, serv.Recommend())
+	} else {
+		ctx.JSON(http.StatusOK, ErrorResponse(err))
+	}
+}
+
 // ErrorResponse 返回错误消息
 func ErrorResponse(err error) serializer.Response {
 	if ve, ok := err.(validator.ValidationErrors); ok {

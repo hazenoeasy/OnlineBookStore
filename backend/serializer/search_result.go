@@ -6,6 +6,8 @@ type SearchResultItem struct {
     Id          int         `json:"id"`
     Title       string      `json:"title"`
     Author      string      `json:"author"`
+    Kind        string      `json:"kind"`
+    Num         int         `json:"num"`
     Cover       string      `json:"cover"`
     Price       int         `json:"price"`
     SalesNum    int         `json:"salesnum"`
@@ -24,6 +26,8 @@ func NewSearchResult(books []model.Book, pages int) SearchResult {
         item[i].Id      =   books[i].BookId
         item[i].Title   =   books[i].Title
         item[i].Author  =   books[i].Author
+        item[i].Kind    =   books[i].Kind
+        item[i].Num     =   books[i].Num
         item[i].Cover   =   books[i].CoverUrl
         item[i].Price   =   books[i].Price
         item[i].SalesNum=   books[i].SalesNum

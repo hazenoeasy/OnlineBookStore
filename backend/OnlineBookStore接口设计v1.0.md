@@ -72,13 +72,15 @@ Response Body：
 | pages    | int          | 总分页数        | 10                      |
 | items    | int          | 此页的项目数    | 2                       |
 | item     | json对象数组 | 书籍介绍项目    |                         |
+| id       | int          | 书籍的id        | 1                       |
 | title    | string       | 书名            | “高等数学”              |
 | author   | string       | 作者            | “张宇昊”                |
 | cover    | string       | 封面的URL       | “/static/cover/123.png” |
 | price    | int          | 价格            | 36                      |
 | salesnum | int          | 销量            | 12                      |
 | descp    | string       | 详细描述图的URL | “/static/descp/123.png” |
-| id       | int          | 书籍的id        | 1                       |
+| kind     | string       | 书籍类型        | “数学”                  |
+| num      | int          | 书籍的库存量    | 12                      |
 
 ```json
 // GET /api/v1/books/search?name=高数&page=1&item=4
@@ -92,6 +94,8 @@ Response Body：
                 "id":		2,
                 "title":	"高等数学",
                 "author":	"张宇昊",
+                "kind":		"数学",
+                "num":		12,
                 "cover":	"/static/cover/123.png",
                 "price":	49,
                 "salesnum":	12,
@@ -101,6 +105,8 @@ Response Body：
                 "id":		3,
                 "title":	"高等数学",
                 "author":	"",
+                "kind":		"数学",
+                "num":		12,
                 "cover":	"/static/cover/124.png",
                 "price":	34,
                 "salesnum":	8,
@@ -114,7 +120,7 @@ Response Body：
 
 #### ~~2.分类浏览~~
 
-#### ~~3.推荐热销书籍~~
+#### 3.推荐热销书籍
 
 描述：系统向用户推荐的书籍
 
@@ -153,6 +159,8 @@ Response Body：
                 "id":		2,
                 "title":	"高等数学",
                 "author":	"张宇昊",
+                "kind":		"数学",
+                "num":		12,
                 "cover":	"/static/cover/123.png",
                 "price":	49,
                 "salesnum":	12,
@@ -162,6 +170,8 @@ Response Body：
                 "id":		3,
                 "title":	"高等数学",
                 "author":	"",
+                "kind":		"数学",
+                "num":		12,
                 "cover":	"/static/cover/124.png",
                 "price":	34,
                 "salesnum":	8,
