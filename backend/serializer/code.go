@@ -14,6 +14,9 @@ const (
 
 	// token授权到期
 	TokenExpired		=	40002
+
+	// 资源没有了
+	ResourceEmptied 	=	40003
 )
 
 const (
@@ -31,4 +34,13 @@ const (
 
 	// 文件保存失败
 	FileSaveErr 		=	50004
+)
+
+// 定义订单的状态信息
+
+const (
+	OrderUnpaid			=	0	// 买家还未付款
+	OrderUndelivered	=	1	// 买家还未发货
+	OrderDelivered		=	2	// 买家已发货
+	OrderClosed 		=	3	// 订单已经关闭
 )

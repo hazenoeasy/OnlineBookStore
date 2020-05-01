@@ -2,9 +2,9 @@ package serializer
 
 // 用户登录后返回给前端的数据格式
 // 用法: Responce{
-// 	"code": xxx
+// 	"code":
 // 	"data“: UserLoginRespData{ ... }
-// 	"msg":	xxx
+// 	"msg":
 // }
 type UserLoginRespData struct {
 	Id 			int 	`json:"id"`
