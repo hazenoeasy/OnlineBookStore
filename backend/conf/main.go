@@ -2,6 +2,7 @@ package conf
 
 import (
 	"DuckyGo/cache"
+	"DuckyGo/cache/hotRank"
 	"DuckyGo/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -39,7 +40,7 @@ func Init() {
 		//cache.InitRabbitMQ(os.Getenv("RABBITMQ_DSN"))
 
 		// 启动其他异步服务 (RedisMQ, RabbitMQ的应用）
-
+		hotRank.InitHotRank() // 启动热销书籍排行榜功能
 	}
 
 	if gin.Mode() == gin.ReleaseMode {

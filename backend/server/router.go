@@ -30,6 +30,7 @@ func NewRouter() *gin.Engine {
 
 		// 主页部分的接口：
 		v1.GET("books/search", api.SearchBook)
+		v1.GET("books/recommend", api.RecommendBook)
 
 		// * 注册
 		v1.POST("user/register", api.UserRegister)

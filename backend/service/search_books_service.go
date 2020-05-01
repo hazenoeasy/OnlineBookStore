@@ -17,7 +17,7 @@ func (this *SearchBooksService) Search() serializer.Response {
     	books   []model.Book
     	num     int
     )
-    if err := model.DB.Select("book_id,title,author,cover_url,price,salesnum,descp_url").
+    if err := model.DB.Select("book_id,title,author,kind,num,cover_url,price,salesnum,descp_url").
         Where("title LIKE ?", "%" + this.Name + "%").
         Order("salesnum DESC").Offset((this.Page - 1) * this.Items).
         Limit(this.Items).Find(&books).Error; err != nil {
